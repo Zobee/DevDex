@@ -87,3 +87,61 @@ unsub() //Stops listeners from modifying state
 ```
 
 This is essentially the Redux pattern.
+
+### Multiple Reducers
+
+Helps with decoupling code. You should only have a reducer work for a particular type of action. I.e. have a reducer for cake actions, and have a reducer for cookie actions. You should also have two different state objects:
+
+```jsx
+const initCakeState = {
+	numCakes: 10
+}
+
+const initCookieState = {
+	numCookies: 10
+}
+
+const cakeReducer = (state = initCakeState, action) => {
+  switch(action.type){
+    case BUY_CAKE:
+      return {...state, numCakes: state.numCakes - 1}
+    case RETURN_CAKE:
+      return {...state, numCakes: state.numCakes + 1}
+    default:
+      return state;
+  }
+}
+
+const cookieReducer = (state = initCookieState, action) => {
+  switch(action.type){
+    case BUY_COOKIE:
+      return {...state, numCookies: state.numCookies - 1}
+    case RETURN_COOKIE:
+      return {...state, numCookies: state.numCookies + 1}
+    default:
+      return state;
+  }
+}
+```
+
+Cool. But our store only accepts a single reducer. How do we pass in our now decoupled states and reducers? Remember, that there's only one store per application, so we can't have multiple stores.
+
+Luckily, Redux has a combineReducers() method just for that!
+
+```jsx
+const rootReducer = redux.combineReducers(
+	{cake: cakeReducer, cookie: cookieReducer}
+)
+```
+
+This will change the shape of the state object in store: 
+
+```jsx
+store.getState() => 
+/*
+	{ 
+		cake: { numCakes: 10 }, 
+		cookie: { numCookies: 20 } 
+	}
+*/
+```
