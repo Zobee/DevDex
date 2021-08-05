@@ -145,3 +145,21 @@ store.getState() =>
 	}
 */
 ```
+### Middleware
+
+Like middleware for Express, you can add additional, or custom functionality to Redux
+
+### Redux Logger
+
+Redux logger is middleware that provides a detailed log of state changes to the store, when a state is updated. 
+
+**Adding middleware**
+```jsx
+const logger = require('redux-logger').createLogger()
+const {applyMiddleware, createStore} = require('redux')
+const applyMiddleWare = applyMiddleware
+
+const store = createStore(rootReducer, applyMiddleWare(logger))
+```
+
+It's as easy as using the applyMiddleware function as the second arg when creating a store and passing in the middleware you want the store to utilize.

@@ -1,5 +1,4 @@
-const {applyMiddleware, createStore, combineReducers} = require('redux')
-const logger = require('redux-logger').createLogger()
+const redux = require('redux')
 
 const BUY_CAKE = "BUY_CAKE";
 const RETURN_CAKE = 'RETURN_CAKE';
@@ -42,19 +41,16 @@ const cookieReducer = (state = initCookieState, action) => {
   }
 }
 
-const applyMiddleWare = applyMiddleware
-
-const rootReducer = combineReducers({cake: cakeReducer, cookie: cookieReducer})
-
-
-const store = createStore(rootReducer, applyMiddleWare(logger))
+const rootReducer = redux.combineReducers({cake: cakeReducer, cookie: cookieReducer})
+const store = redux.createStore(rootReducer)
 console.log("initial state: ", store.getState())
-const unsubscribe = store.subscribe(() => {})
+const unsubscribe = store.subscribe(() => console.log("updated state: ", store.getState()))
 
 store.dispatch(buyCake())
 store.dispatch(buyCake())
 store.dispatch(buyCake())
-store.dispatch(buyCake())
-
-
+store.dispatch(buyCookie())
+store.dispatch(buyCookie())
+store.dispatch(returnCake())
+store.dispatch(returnCookie())
 unsubscribe()
