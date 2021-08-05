@@ -163,3 +163,60 @@ const store = createStore(rootReducer, applyMiddleWare(logger))
 ```
 
 It's as easy as using the applyMiddleware function as the second arg when creating a store and passing in the middleware you want the store to utilize.
+
+### Async Actions
+
+All of our above examples have been of synchronous state updates. But we won't always be so lucky. There will definitely be times where we will need to update our state asynchronously, like when pulling data from an API, or waiting for user input.
+
+In order to make async state changes we'll need a request library (axios in this case), and redux-thunk, which is redux middleware that allows us to define async action creators
+
+```jsx
+const {applyMiddleware, createStore} = require('redux')
+const thunk = require('redux-thunk').default
+const axios = require('axios')
+
+const initState = {
+  loading: false,
+  users: [],
+  error: ""
+}
+
+//ACTIONS
+const FETCH_USERS_REQ = "FETCH_USERS_REQ";
+const FETCH_USERS_SUCCESS = "FETCH_USERS_SUCCESS";
+const FETCH_USERS_ERROR = "FETCH_USERS_ERROR";
+
+const fetchUsersReq = () => ({type: FETCH_USERS_REQ})
+const fetchUsersSuccess = users => ({type: FETCH_USERS_SUCCESS, payload: users})
+const fetchUsersError = error => ({type: FETCH_USERS_ERROR, payload: error})
+
+//REDUCER
+const reducer = (state = initState, action) => {
+  switch(action.type){
+    case FETCH_USERS_REQ:
+      return {...state, loading: true}
+    case FETCH_USERS_SUCCESS:
+      return {...state, loading: false, users: action.payload, error: ""}
+    case FETCH_USERS_ERROR:
+      return {...state, loading: false, users: [], error: action.payload}
+    default:
+      return state;
+  }
+}
+
+//Async Action Creator (thunk)
+const fetchUsers = () => {
+  return function(dispatch){
+    dispatch(fetchUsersReq()) //sets loading to true
+    axios.get("https://jsonplaceholder.typicode.com/users")
+    .then(res => dispatch(fetchUsersSuccess(res.data)))
+    .catch(err => dispatch(fetchUsersError(err.message)))
+  }
+}
+
+//Create the store and dispatch actions
+const store = createStore(reducer, applyMiddleware(thunk));
+console.log(store.getState())
+store.subscribe(() => console.log(store.getState()))
+store.dispatch(fetchUsers())
+```
