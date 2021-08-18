@@ -27,6 +27,7 @@ TS' popularity also stems from how it enhances the developer experience, as it a
   ]
 }
 ```
+Alternatively, use tsc --init to generate a tsconfig file
 3. Create a src directory, and within it, create an index.ts file
 4. Write some code. 
 5. Compile that code into JS using the ```tsc``` command from the root directory.
@@ -41,8 +42,57 @@ It's important to note that any TS code you write will be compiled into JS, as b
 ## Typing Variables
 The most powerful feature of TypeScript is the ability to strongly type variables. This can be implicit (TS is smart enough to infer the type of a variable when assigned), but it's typically good practice to explicitly declare types.
 
-Here's an example of types in action:
+Here are the basic types: 
 
+let num:number = 5;
+let str:string = "Hello";
+let isTrue:boolean = false;
+let x:any = "Whatever you want";
+
+When using 'any' as a type, the variable can be reassigned without TS getting mad at you.
+
+You can also use a pipe '|' to assign a variable to multiple types
+
+let age:string|number;
+
+the age variable can be assigned (and reassigned) to either a string, or a number
+
+When declaring a constant, it's type will be of whatever the associated value is.
+const dog = 'fido'; //const dog is of type 'fido', rather than type string.
+
+Objects Can Also Have Types:
+
+You can specify the values within an array;
+
+let nums:number[] = [1,2,3,4,5];
+
+number[] indicates that this is an array of numbers.
+
+You can also create tuples in JS with the power of typing:
+
+const myTuple :[number, string][] = [[1, "Max"], [2, "Jim"], [3, "Cathy"]]
+
+### Objects and Interfaces
+You can type objects in the same way:
+
+const myCat: {name:string, age:number} = {
+  name: "Mittens",
+  age: 6
+}
+
+You can also use an interface to create a resusable template for object types. Interfaces are a cleaner way to specify the structure of objects.
+
+interface Cat {
+  name:string,
+  age:number
+}
+
+const ourCat:Cat = {
+  name:"Smiley",
+  age: 2
+};
+
+### Here's an example of types in action:
 
 TypeScript will implicitly set the type to number.
 let houseNo = 221; 
@@ -51,7 +101,7 @@ If you then try to reassign the variable to a string:
 
 houseNo = "Baker Street"; 
 
-TS will throw an error: "Type 'string' is not assignable to type 'number'."
+TS will throw an error: "Type 'string' is not assignable to type 'number'." Note that running tsc, even when TS is complaining, will still generate a JS file. Technically, nothing's stopping you from ignoring all of those errors (other than your burning conscience, of course).
 
 At first, having to force a type conformity onto loosely-typed JS seems like a royal pain. Everything was working fine before, right? 
 
@@ -59,9 +109,11 @@ Well, TS is actually doing you a huge favour here. Being certain that a variable
 
 Here's an example:
 
+```
 function addFive(num){
   return num + 5;
 }
+```
 
 The above function is super simple, you'd expect that the output would be the input plus 5.
 
@@ -73,3 +125,14 @@ addFive("50") // --> "505"
 
 Not quite what we wanted. 
 
+Ensuring that our variables are what we expect them to be prevents errors like this from occurring. It may seem trivial, but for secure operations, like financial transactions, you want to make sure that what you're doing is EXACTLY what you want it to be. Trust me, people get spicy over their finances.
+
+We can go even further and use type-checking for function arguments and output.
+
+```
+function addFive(input:number):number{
+  return input + 5;
+}
+```
+
+By explicitly listing both the expected input and output types, you can be certain that your code won't be spitting out anything funky without you knowing about it.
