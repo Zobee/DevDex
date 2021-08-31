@@ -44,27 +44,27 @@ The most powerful feature of TypeScript is the ability to strongly type variable
 
 Here are the basic types: 
 
-let num:number = 5;
-let str:string = "Hello";
-let isTrue:boolean = false;
+let num: number = 5;
+let str: string = "Hello";
+let isTrue: boolean = false;
 let x:any = "Whatever you want";
 
-When using 'any' as a type, the variable can be reassigned without TS getting mad at you.
+When using 'any' as a type, the variable can be reassigned without TS getting mad at you. This is just how JS works naturally.
 
-You can also use a pipe '|' to assign a variable to multiple types
+You can also use a pipe '|' to assign a variable to multiple types.
 
-let age:string|number;
+let age: string | number;
 
-the age variable can be assigned (and reassigned) to either a string, or a number
+the age variable can now be assigned (and reassigned) to either a string, or a number.
 
 When declaring a constant, it's type will be of whatever the associated value is.
-const dog = 'fido'; //const dog is of type 'fido', rather than type string.
+const dog = 'fido'; ```//const dog is of type 'fido', rather than type string```.
 
 Objects Can Also Have Types:
 
 You can specify the values within an array;
 
-let nums:number[] = [1,2,3,4,5];
+let nums: number[] = [1,2,3,4,5];
 
 number[] indicates that this is an array of numbers.
 
@@ -87,7 +87,7 @@ interface Cat {
   age:number
 }
 
-const ourCat:Cat = {
+const ourCat: Cat = {
   name:"Smiley",
   age: 2
 };
@@ -95,6 +95,7 @@ const ourCat:Cat = {
 ### Here's an example of types in action:
 
 TypeScript will implicitly set the type to number.
+
 let houseNo = 221; 
 
 If you then try to reassign the variable to a string: 
@@ -130,9 +131,31 @@ Ensuring that our variables are what we expect them to be prevents errors like t
 We can go even further and use type-checking for function arguments and output.
 
 ```
-function addFive(input:number):number{
+function addFive(input: number): number{
   return input + 5;
 }
 ```
 
-By explicitly listing both the expected input and output types, you can be certain that your code won't be spitting out anything funky without you knowing about it.
+By explicitly listing both the expected input and output types, you can be certain that your code won't be spitting out anything funky without you knowing about it. Pretty dang sweet, right? 
+
+But wait? What if you don't know what your expected output should be? Then it's a good idea to re-evaluate what you're trying to accomplish with the code you're writing. Generally, you'd want your code to return the exact same result given the same input. This is a fundamental aspect of functional programming. Regardless, this is one of benefits of using TS, it'll make you more aware of the internal structure of your programs. You can catch these errors before release, rather than scramble to fix a bug that really didn't need to be there in the first place.
+
+### Optional Arguments and Returns:
+
+Oftentimes, you'll find yourself with a function with an argument that isn't explicitly required:
+
+const adoptCat = (name: string, breed: string, age?: number):string => {
+  return `Name: ${name}\nBreed: ${breed}\nAge: ${age ? age : "unknown"}\nWelcome home!`
+}
+
+The function works whether you pass it an age parameter, or not, and so TS won't yell at you if you don't provide one, whereas it will if you omit the name or breed params.
+
+A function can either return a value, or void. When a function doesn't return an explicit value (using the return keyword, or an arrow function's implicit return), it will return void.
+
+const greeting = (name: string):void => {
+  console.log(`What's poppin' ${name}?`)
+}
+
+Again, we don't need to explicitly declare the return type, but it is good practice.
+
+TS allows us to be even more granular with our function definitions
